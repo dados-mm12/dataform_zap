@@ -1,0 +1,10 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_acessLogs",
+  description: "tabela final de acessos",
+  tags: ["bi", "acesso"]
+}
+
+
+SELECT * FROM ${ref("bi_acessLogs")}
