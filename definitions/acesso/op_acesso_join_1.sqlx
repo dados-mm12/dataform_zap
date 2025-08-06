@@ -6,8 +6,35 @@ config {
   tags: ["join", "acesso", "usuarios"]
 }
 
+SELECT 
+  CASE
+    WHEN REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.category'), r'([\"])', "") = "1" THEN "Iniciante"
+    WHEN REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.category'), r'([\"])', "") = "2" THEN "Avançado"
+    WHEN REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.category'), r'([\"])', "") = "3" THEN "Especialista"
+    WHEN REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.category'), r'([\"])', "") = "4" THEN "Select"
+  END AS Categoria,
 
-SELECT * 
+  REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.device'), r'([\"])', "") AS Device,
+  REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.email'), r'([\"])', "") AS Email,
+  REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.userId'), r'([\"])', "") AS Id_Usuario,
+  CONCAT("'", REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.id'), r'([\"])', "")) AS Id_Acesso,
+
+  DATETIME_SUB(
+    DATETIME(TIMESTAMP_SECONDS(CAST(REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.createdAt._seconds'), r'([\"])', "") AS INT64))),
+    INTERVAL 180 MINUTE
+  ) AS Data,
+
+  DATE(
+    DATETIME_SUB(
+      DATETIME(TIMESTAMP_SECONDS(CAST(REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.createdAt._seconds'), r'([\"])', "") AS INT64))),
+      INTERVAL 180 MINUTE
+    )
+  ) AS DataAbv,
+
+  REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(col.data AS STRING), '$.type'), r'([\"])', "") AS Perfil,
+  REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.publicId'), r'([\"])', "") AS Id_Zap,
+  REGEXP_REPLACE(JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.id'), r'([\"])', "") AS Id_User
+
 FROM ${ref("raw_acessLogs_tratado")} AS col
 JOIN ${ref("firestore_export", "users_raw_latest")} AS usr
-  ON col.Id_Usuario = JSON_EXTRACT_SCALAR(usr.data, '$.id')
+  ON col.Id_Usuario = JSON_EXTRACT_SCALAR(CAST(usr.data AS STRING), '$.id')
