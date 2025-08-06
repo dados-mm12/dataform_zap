@@ -1,0 +1,13 @@
+config {
+  type: "view",
+  schema: "acesso",
+  name: "op_acesso_join_1",
+  description: "puxando id e categoria do usuario da tabela users",
+  tags: ["join", "acesso", "usuarios"]
+}
+
+
+SELECT * FROM ${ref("raw_acessLogs_tratado")} as col
+JOIN ${ref("raw_users_latest")} as user 
+
+on col.Id_Usuario = json_extract(user.data, '$.id')
