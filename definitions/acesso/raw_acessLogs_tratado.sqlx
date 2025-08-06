@@ -1,0 +1,12 @@
+config {
+  type: "table",
+  schema: "acesso",
+  name: "raw_acessLogs_tratado",
+  description: "tabela bruta de acessos do programa",
+  tags: ["raw", "acesso", "usuarios"]
+}
+
+SELECT 
+*
+
+FROM ${ref("accessLogs_raw_latest")} AS resg limit 100

@@ -4,5 +4,3 @@ config {
   name: "accessLogs_raw_latest",
   database: "clube-zap---prd"
 }
-
-SELECT * FROM ${ref("accessLogs_raw_latest")} AS resg

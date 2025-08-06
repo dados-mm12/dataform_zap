@@ -1,5 +1,5 @@
 defaultProject: clube-zap---prd
-defaultLocation: southamerica-east1
+defaultLocation: US --southamerica-east1
 defaultDataset: dataform
 defaultAssertionDataset: dataform_assertions
 dataformCoreVersion: 3.0.0
