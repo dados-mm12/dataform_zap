@@ -9,5 +9,4 @@ config {
 
 SELECT * FROM ${ref("raw_acessLogs_tratado")} as col
 JOIN ${ref("raw_users_latest")} as user 
-
 on col.Id_Usuario = json_extract(user.data, '$.id')
