@@ -7,6 +7,12 @@ config {
 }
 
 SELECT 
-*
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.device'), r'([\"])', "") as Device,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.email'), r'([\"])', "") as Email,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userId'), r'([\"])', "") as Id_Usuario,
+concat("'", REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.id'), r'([\"])', "")) as Id_Acesso,
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) as Data,
+DATE(datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "") as int64))), interval 180 minute)) as DataAbv,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.type'), r'([\"])', "") as Perfil
 
-FROM ${ref("accessLogs_raw_latest")} AS resg limit 100
+FROM ${ref("accessLogs_raw_latest")} AS col limit 100
