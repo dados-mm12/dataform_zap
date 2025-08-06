@@ -7,4 +7,4 @@ config {
 }
 
 
-SELECT * FROM ${ref("bi_acessLogs")}
+SELECT * FROM ${ref("op_acesso_join_1")}
