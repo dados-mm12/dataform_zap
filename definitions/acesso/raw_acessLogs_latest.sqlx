@@ -1,0 +1,8 @@
+config {
+  type: "declaration",  // Indica que é uma tabela já existente
+  schema: "firestore_export",
+  name: "accessLogs_raw_latest",
+  database: "clube-zap---prd"
+}
+
+SELECT * FROM ${ref("accessLogs_raw_latest")} AS resg
