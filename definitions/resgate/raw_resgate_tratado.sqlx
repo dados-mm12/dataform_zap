@@ -51,7 +51,8 @@ REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderCep'), r'([\"])', "") as CEP,
 concat(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStreet'), r'([\"])', ""), ", ",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStreetNumber'), r'([\"])', ""), " ",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStreetComp'), r'([\"])', ""), " - ", REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderNeigh'), r'([\"])', "")  ) as Endereco,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStatus'), r'([\"])', "") as Status,
 round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderValue'), r'([\"])', "")as float64), 2) as Valor_Resgate,
-round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.totalPoints'), r'([\"])', "")as float64), 2) as Pontos_Resgate
+round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.totalPoints'), r'([\"])', "")as float64), 2) as Pontos_Resgate,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.active'), r'([\"])', "") as Ativo
 
 
 FROM ${ref("firestore_export","resgates_raw_latest")} as col

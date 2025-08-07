@@ -1,0 +1,33 @@
+config {
+  type: "view",
+  schema: "resgate",
+  name: "op_resgate_join_1",
+  description: "puxando email, categoria, cpf, id, etc da tabela de usuarios",
+  tags: ["join", "resgates", "usuarios"]
+}
+
+
+
+SELECT 
+col.*,
+usr.Email,
+usr.Id_Zap,
+usr.Perfil,
+usr.Categoria,
+usr.CPF_CNPJ,
+usr. accountType,
+usr.accountID,
+usr.contractNumber,
+usr.emailId
+
+FROM ${ref("raw_resgate_tratado")} as col
+
+JOIN ${ref("raw_users_tratado")} as usr 
+
+on col.Id_Usuario = usr.Id_Usuario
+
+
+where REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.active'), r'([\"])', "") = "true" 
+order by datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) desc
+
+
