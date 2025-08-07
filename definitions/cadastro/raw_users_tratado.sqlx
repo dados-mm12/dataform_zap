@@ -1,7 +1,7 @@
 config {
   type: "table",
   schema: "cadastro",
-  name: "raw_cadastro_tratado",
+  name: "raw_users_tratado",
   description: "tabela bruta de cadastro de usuários do programa",
   tags: ["raw", "cadastro", "usuarios","select"]
 }
@@ -39,4 +39,4 @@ REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.contractNumber'), r'([\"])', "") as con
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.emailId'), r'([\"])', "") as emailId,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastAccelerator'), r'([\"])', "") as lastAccelerator
 
-FROM ${ref("raw_users_latest")} as col
+FROM ${ref("users_raw_latest")} as col
