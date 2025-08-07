@@ -1,0 +1,34 @@
+config {
+  type: "table",
+  schema: "pontuacao",
+  name: "raw_statements_tratado",
+  description: "tabela bruta com pontuacoes",
+  tags: ["raw", "pontuacao", "usuarios"]
+}
+
+
+
+SELECT 
+
+round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.balance'), r'([\"])', "")as float64), 2) as SaldoDaTransacao,
+round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.points'), r'([\"])', "")as float64), 2) as Pontos,
+REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.email'), r'([\"])', "") as Email,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userId'), r'([\"])', "") as Id_Usuario,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.description'), r'([\"])', "") as Descricao,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.type'), r'([\"])', "") as Tipo,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.typeId'), r'([\"])', "") as TipoId,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.expiresAt'), r'([\"])', "") as ExpiraEm,
+concat("''",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.id'), r'([\"])', "")) as Id_Transacao,
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) as Data,
+REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.publicId'), r'([\"])', "") as Id_Zap,
+REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.type'), r'([\"])', "") as Perfil,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.typeId'), r'([\"])', "") as Tipo_Id,
+CASE
+	when REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.category'), r'([\"])', "") ="1" then "Iniciante"
+    when REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.category'), r'([\"])', "") ="2" then "Avançado"
+    when REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.category'), r'([\"])', "") ="3" then "Especialista"
+    when REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.category'), r'([\"])', "") ="4" then "Select"
+    
+END as Categoria,
+
+FROM ${ref("raw_statements_latest")} as col
