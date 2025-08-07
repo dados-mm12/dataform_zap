@@ -37,6 +37,7 @@ REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.accountType'), r'([\"])', "") as accoun
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.accountId'), r'([\"])', "") as accountID,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.contractNumber'), r'([\"])', "") as contractNumber,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.emailId'), r'([\"])', "") as emailId,
-REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastAccelerator'), r'([\"])', "") as lastAccelerator
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastAccelerator'), r'([\"])', "") as lastAccelerator,
+REGEXP_REPLACE(JSON_EXTRACT(user.data, '$.type'), r'([\"])', "") as Perfil
 
 FROM ${ref("users_raw_latest")} as col

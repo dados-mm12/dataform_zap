@@ -27,7 +27,7 @@ JOIN ${ref("raw_users_tratado")} as usr
 on col.Id_Usuario = usr.Id_Usuario
 
 
-where REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.active'), r'([\"])', "") = "true" 
-order by datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) desc
+where col.Ativo= "true" 
+order by col.Data
 
 
