@@ -1,0 +1,17 @@
+SELECT 
+
+col.*,
+usr.Email,
+usr.Id_Zap,
+usr.Perfil,
+usr.Categoria,
+
+FROM ${ref("raw_statements_tratado")} as col
+
+LEFT JOIN ${ref("raw_users_tratado")} as usr 
+
+
+on col.Id_Usuario = usr.Id_Usuario
+
+where col.Status = "Disponível"
+
