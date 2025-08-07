@@ -1,0 +1,10 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_resgate",
+  description: "tabela final de acessos",
+  tags: ["bi", "resgates"]
+}
+
+
+SELECT * FROM ${ref("op_resgate_join_1")}
