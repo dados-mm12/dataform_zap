@@ -54,4 +54,4 @@ round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderValue'), r'([\"])', "")
 round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.totalPoints'), r'([\"])', "")as float64), 2) as Pontos_Resgate
 
 
-FROM ${ref("raw_resgates_latest")} as col
+FROM ${ref("firestore_export","raw_resgates_latest")} as col
