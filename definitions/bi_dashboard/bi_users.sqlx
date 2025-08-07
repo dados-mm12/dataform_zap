@@ -1,0 +1,9 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_users",
+  description: "tabela final de usuarios",
+  tags: ["bi", "cadastro","usuarios"]
+}
+
+select * from  ${ref("op_cadastro_join_1")}
