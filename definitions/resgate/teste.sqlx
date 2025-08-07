@@ -1,9 +1,0 @@
-config {
-  type: "view",
-  schema: "resgate",
-  name: "teste",
-  description: "teste"
-}
-SELECT 
-*
-FROM ${ref("raw_users_tratado")} limit 10
