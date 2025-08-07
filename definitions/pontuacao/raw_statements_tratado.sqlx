@@ -20,6 +20,7 @@ REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.expiresAt'), r'([\"])', "") as ExpiraEm
 concat("''",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.id'), r'([\"])', "")) as Id_Transacao,
 datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) as Data,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.typeId'), r'([\"])', "") as Tipo_Id,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.status'), r'([\"])', "") as Status
 
 
 FROM ${ref("statements_raw_latest")} as col
