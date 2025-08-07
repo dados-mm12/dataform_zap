@@ -1,0 +1,16 @@
+config {
+  type: "view",
+  schema: "cadastro",
+  name: "op_cadastro_join_1",
+  description: "puxando saldo do usuario da tabela balances",
+  tags: ["join", "cadastro", "usuarios"]
+}
+
+SELECT 
+
+col.*, 
+bal.Saldo
+
+FROM ${ref("raw_users_tratado")} as col
+LEFT JOIN ${ref("raw_balances_tratado")} as bal
+on col.Id_Usuario = bal.Id_Usuario

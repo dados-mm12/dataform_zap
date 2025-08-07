@@ -1,8 +1,0 @@
-config {
-  type: "table",
-  schema: "pontuacao",
-  name: "teste",
-  description: "criando pasta teste no bq"
-}
-
-select * from ${ref("op_acesso_join_1")} limit 10
