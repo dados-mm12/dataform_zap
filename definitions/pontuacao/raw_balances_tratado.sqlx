@@ -1,0 +1,16 @@
+config {
+  type: "table",
+  schema: "pontuacao",
+  name: "raw_balances_tratado",
+  description: "tabela bruta com saldo dos usuarios",
+  tags: ["raw", "pontuacao", "usuarios","saldo"]
+}
+
+
+
+SELECT 
+
+round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.balance'), r'([\"])', "")as float64), 2) as Saldo,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.id'), r'([\"])', "") as Id_Usuario
+
+FROM ${ref("raw_balances_latest")} as col

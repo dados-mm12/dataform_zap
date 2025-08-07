@@ -4,3 +4,5 @@ config {
   name: "balances_raw_latest",
   database: "clube-zap---prd"
 }
+
+
