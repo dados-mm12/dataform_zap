@@ -1,0 +1,57 @@
+config {
+  type: "table",
+  schema: "resgates",
+  name: "raw_resgates_tratado",
+  description: "tabela bruta de resgates na plataforma",
+  tags: ["raw", "resgates", "usuarios","select"]
+}
+
+SELECT 
+
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) as Data,
+concat("'",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.idDoc'), r'([\"])', "")) as Id_Resgate,
+concat(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userDdd'), r'([\"])', ""), "-", REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userNumber'), r'([\"])', "")) as Telefone,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userId'), r'([\"])', "") as Id_Usuario, 
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userIp'), r'([\"])', "") as IP,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.userName'), r'([\"])', "") as Usuario,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.type'), r'([\"])', "") as Tipo,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.productName'), r'([\"])', "") as Produto,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.productCategory'), r'([\"])', "") as Cat_Produto,
+REGEXP_REPLACE(
+    REGEXP_REPLACE(
+        REGEXP_REPLACE(
+            REGEXP_REPLACE(
+                REGEXP_REPLACE(
+                    REGEXP_REPLACE(
+                        REGEXP_REPLACE(
+                            REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.idParceiro2'), r'([\"])', ""),
+                            "{",
+                            ""),
+                            "}",
+                            ""
+                    ),
+                    "bairro",
+                    "Bairro "
+                ),
+                "tipo",
+                "Tipo "
+            ),
+            "nome",
+            "Nome "
+        ),
+        ",",
+        ", "
+    ),
+    ":",
+    ": "
+) as idParceiro2,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderCity'), r'([\"])', "") as Cidade,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderState'), r'([\"])', "") as Estado,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderCep'), r'([\"])', "") as CEP,
+concat(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStreet'), r'([\"])', ""), ", ",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStreetNumber'), r'([\"])', ""), " ",REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStreetComp'), r'([\"])', ""), " - ", REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderNeigh'), r'([\"])', "")  ) as Endereco,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderStatus'), r'([\"])', "") as Status,
+round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.orderValue'), r'([\"])', "")as float64), 2) as Valor_Resgate,
+round(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.totalPoints'), r'([\"])', "")as float64), 2) as Pontos_Resgate
+
+
+FROM ${ref("firestore_export","resgates_raw_latest")} as col
