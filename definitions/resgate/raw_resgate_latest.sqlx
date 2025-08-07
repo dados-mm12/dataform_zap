@@ -1,6 +1,6 @@
 config {
   type: "declaration",  // Indica que é uma tabela já existente
   schema: "firestore_export",
-  name: "raw_resgates_latest",
+  name: "raw_resgate_latest",
   database: "clube-zap---prd"
 }
