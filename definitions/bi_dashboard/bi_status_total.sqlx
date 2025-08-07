@@ -1,0 +1,17 @@
+config {
+    type: "table",
+    schema: "bi_dashboard",
+    name: "bi_status_total",
+    description: `gerando tabela de cadastros totais por status`,
+    tags: ["cadastro","usuarios", "bi","dashboard", "pontuacao"]
+ }
+
+WITH tab AS (
+  SELECT
+    status,
+    COUNT(DISTINCT Email) AS qtd_emails
+  FROM ${ref("bi_users")}
+  WHERE Email IS NOT NULL AND status != "SUSPENSO"
+  GROUP BY status
+)
+SELECT * FROM tab
