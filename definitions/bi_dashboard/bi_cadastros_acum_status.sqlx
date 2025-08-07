@@ -1,0 +1,36 @@
+ config {
+    type: "table",
+    schema: "bi_dashboard",
+    name: "bi_cadastro_acum_status",
+    description: `gerando tabela de cadastros acumulado por período`,
+    tags: ["cadastro","usuarios", "bi","dashboard", "pontuacao"]
+ }
+
+WITH daily AS (
+  SELECT
+    DATE(Criadoem) AS Criadoem_abrev,
+    LOWER(Status) AS status_normalizado,
+    COUNT(DISTINCT Email) AS qtd_emails
+  FROM ${ref("bi_users")}
+  WHERE Email IS NOT NULL AND status != "SUSPENSO"
+  GROUP BY Criadoem_abrev, status_normalizado
+),
+diario_pivot AS (
+  SELECT
+    Criadoem_abrev,
+    SUM(qtd_emails) AS qtd_emails,
+    SUM(CASE WHEN status_normalizado = 'ativo' THEN qtd_emails ELSE 0 END) AS qtd_ativos,
+    SUM(CASE WHEN status_normalizado = 'inativo' THEN qtd_emails ELSE 0 END) AS qtd_inativos
+  FROM daily
+  GROUP BY Criadoem_abrev
+)
+SELECT
+  Criadoem_abrev,
+  qtd_emails,
+  qtd_ativos,
+  qtd_inativos,
+  SUM(qtd_emails) OVER (ORDER BY Criadoem_abrev) AS acumulado_emails,
+  SUM(qtd_ativos) OVER (ORDER BY Criadoem_abrev) AS acumulado_emails_ativo,
+  SUM(qtd_inativos) OVER (ORDER BY Criadoem_abrev) AS acumulado_emails_inativo
+FROM diario_pivot
+ORDER BY Criadoem_abrev
