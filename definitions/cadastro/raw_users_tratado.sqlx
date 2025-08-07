@@ -1,8 +1,42 @@
 config {
-  type: "view",
+  type: "table",
   schema: "cadastro",
-  name: "teste",
-  description: "teste"
+  name: "raw_cadastro_tratado",
+  description: "tabela bruta de cadastro de usuários do programa",
+  tags: ["raw", "cadastro", "usuarios","select"]
 }
 
-SELECT * from ${ref("op_acesso_join_1")} limit 10
+SELECT 
+
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.createdAt._seconds'), r'([\"])', "")as int64))), interval 180 minute) as CriadoEm,
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.firstLoginDate._seconds'), r'([\"])', "")as int64))), interval 180 minute) as PrimeiroLogin,
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastCredit._seconds'), r'([\"])', "")as int64))), interval 180 minute) as UltimoCredito,
+datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastOrder._seconds'), r'([\"])', "")as int64))), interval 180 minute) as UltimoResgate,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.email'), r'([\"])', "") as Email,
+case
+	when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="1" then "Iniciante"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="2" then "Avançado"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="3" then "Especialista"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="4" then "Select"
+    
+end as Categoria,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.fullName'), r'([\"])', "") as Nome,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.id'), r'([\"])', "") as Id_Usuario,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.publicId'), r'([\"])', "") as Id_Zap,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.status'), r'([\"])', "") as Status,
+case
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.type'), r'([\"])', "") = "INC" then "INC"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.type'), r'([\"])', "") = "ANAPRO" then "ANAPRO"
+    ELSE "IMC"
+end as Tipo,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.addressCity'), r'([\"])', "") as Cidade,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.addressState'), r'([\"])', "") as UF,
+concat(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.phoneDDD'), r'([\"])', ""), " ", REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.phoneNumber'), r'([\"])', "")) as Telefone,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.registeredId'), r'([\"])', "") as CPF_CNPJ,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.accountType'), r'([\"])', "") as accountType,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.accountId'), r'([\"])', "") as accountID,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.contractNumber'), r'([\"])', "") as contractNumber,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.emailId'), r'([\"])', "") as emailId,
+REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastAccelerator'), r'([\"])', "") as lastAccelerator
+
+FROM ${ref("raw_users_latest")} as col
