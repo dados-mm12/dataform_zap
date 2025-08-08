@@ -10,7 +10,7 @@ SELECT
 col.*,
 usr.Categoria,
 usr.Id_Zap,
-usr.Id_Usuario
+usr.Id_Usuario AS Id_Usuario_usr
 
 FROM ${ref("raw_acessLogs_tratado")} AS col
 JOIN ${ref("raw_users_tratado")} AS usr
