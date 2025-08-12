@@ -7,4 +7,11 @@ config {
 }
 
 
-SELECT * FROM ${ref("op_resgate_join_1")}
+SELECT *,
+CASE 
+    WHEN DATE(Data) = MIN(DATE(Data)) OVER (PARTITION BY Email) THEN 'novo'
+    ELSE 'recorrente' END AS recor_resg,
+    CASE
+    WHEN FORMAT_DATE('%Y-%m', DATE(Data)) = MIN(FORMAT_DATE('%Y-%m', DATE(Data))) OVER (PARTITION BY Email) THEN 'sim'
+    ELSE 'não' END AS mes_prim_resg
+FROM ${ref("op_resgate_join_1")}
