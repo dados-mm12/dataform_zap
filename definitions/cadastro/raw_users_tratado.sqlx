@@ -14,10 +14,10 @@ datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.dat
 datetime_sub(datetime(TIMESTAMP_SECONDS(cast(REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.lastOrder._seconds'), r'([\"])', "")as int64))), interval 180 minute) as UltimoResgate,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.email'), r'([\"])', "") as Email,
 case
-	when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="1" then "Iniciante"
-    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="2" then "Avançado"
-    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="3" then "Especialista"
-    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="4" then "Select"
+	when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="1" then "1" --"Iniciante"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="2" then "2" --"Avançado"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="3" then "3" --"Especialista"
+    when REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', "") ="4" then "4"  --"Select"
     
 end as Categoria,
 REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.fullName'), r'([\"])', "") as Nome,
