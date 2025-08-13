@@ -7,4 +7,9 @@ config {
 }
 
 
-SELECT * FROM ${ref("op_pontuacao_join_1")}
+SELECT Data,Pontos,Id_Transacao, Tipo, 
+ SUM(Pontos) OVER (
+    ORDER BY DATETIME(Data), Id_Transacao
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  ) AS Saldo_Acumulado
+FROM ${ref("op_pontuacao_join_1")}
