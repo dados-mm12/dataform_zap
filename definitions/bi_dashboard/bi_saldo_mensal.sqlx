@@ -1,0 +1,29 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_saldo_mensal",
+  description: "tabela com saldos de pontos por mês",
+  tags: ["bi", "saldo","pontuacao","mensal","grafico"]
+}
+
+
+WITH PontosPorMes AS (
+  SELECT
+    FORMAT_DATETIME('%Y-%m', DATETIME(Data)) AS AnoMes,
+    SUM(Pontos) AS PontosNoMes
+  FROM
+    ${ref("op_pontuacao_join_1")}
+  GROUP BY
+    AnoMes
+)
+
+SELECT
+  *,
+  SUM(PontosNoMes) OVER (
+    ORDER BY AnoMes
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+  ) AS Saldo_Acumulado_Mensal
+FROM
+  PontosPorMes
+ORDER BY
+  AnoMes
