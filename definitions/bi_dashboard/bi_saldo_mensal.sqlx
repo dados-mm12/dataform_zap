@@ -9,21 +9,21 @@ config {
 
 WITH PontosPorMes AS (
   SELECT
-    FORMAT_DATETIME('%Y-%m', DATETIME(Data)) AS AnoMes,
+    DATE_TRUNC(DATE(Data), MONTH) AS Mes,  -- converte para data: primeiro dia do mês
     SUM(Pontos) AS PontosNoMes
   FROM
     ${ref("op_pontuacao_join_1")}
   GROUP BY
-    AnoMes
+    Mes
 )
 
 SELECT
   *,
   SUM(PontosNoMes) OVER (
-    ORDER BY AnoMes
+    ORDER BY Mes
     ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
   ) AS Saldo_Acumulado_Mensal
 FROM
   PontosPorMes
 ORDER BY
-  AnoMes
+  Mes
