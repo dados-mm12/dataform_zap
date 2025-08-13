@@ -7,7 +7,7 @@ config {
 }
 
 
-SELECT Data,Pontos,Id_Transacao, Tipo, 
+SELECT *,
  SUM(Pontos) OVER (
     ORDER BY DATETIME(Data), Id_Transacao
     ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
