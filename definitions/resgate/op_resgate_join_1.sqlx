@@ -18,7 +18,8 @@ usr.CPF_CNPJ,
 usr. accountType,
 usr.accountID,
 usr.contractNumber,
-usr.emailId
+usr.emailId, 
+usr.CriadoEm
 
 FROM ${ref("raw_resgate_tratado")} as col
 
