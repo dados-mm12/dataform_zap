@@ -1,7 +1,7 @@
 config {
   type: "table",
   schema: "bi_dashboard",
-  name: "bi_acessLogs",
+  name: "bi_acesslogs",
   description: "tabela final de acessos",
   tags: ["bi", "acesso"]
 }

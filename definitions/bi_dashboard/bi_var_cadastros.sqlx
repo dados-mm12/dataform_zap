@@ -1,7 +1,7 @@
  config {
     type: "table",
     schema: "bi_dashboard",
-    name: "bi_mom_cadastros",
+    name: "bi_var_cadastros",
     description: `gerando tabela de variaçãoo MoM e YoY %`,
     tags: ["cadastro","usuarios", "bi","dashboard", "variação","tabela"]
  }

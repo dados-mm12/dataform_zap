@@ -1,0 +1,33 @@
+ config {
+    type: "table",
+    schema: "bi_dashboard",
+    name: "bi_var_acessos",
+    description: `gerando tabela de variação de acessos MoM e YoY %`,
+    tags: ["acessos","usuarios", "bi","dashboard", "variação","tabela"]
+ }
+
+WITH base AS (
+  SELECT
+    DATE_TRUNC(DATE(Data), MONTH) AS mes,
+    COUNT(DISTINCT Id_Acesso) AS novos_acessos
+  FROM ${ref("bi_acesslogs")}
+  WHERE Id_Acesso IS NOT NULL
+  GROUP BY 1
+),
+
+com_variacoes AS (
+  SELECT
+    mes,
+    novos_acessos,
+    LAG(novos_acessos) OVER (ORDER BY mes) AS acessos_mes_anterior,
+    LAG(novos_acessos, 12) OVER (ORDER BY mes) AS acessos_ano_anterior
+  FROM base
+)
+
+SELECT
+  mes,
+  novos_acessos,
+  SAFE_DIVIDE(novos_acessos - acessos_mes_anterior, acessos_mes_anterior) AS variacao_mom_pct,
+  SAFE_DIVIDE(novos_acessos - acessos_ano_anterior, acessos_ano_anterior) AS variacao_yoy_pct
+FROM com_variacoes
+ORDER BY mes
