@@ -1,0 +1,45 @@
+ config {
+    type: "table",
+    schema: "bi_dashboard",
+    name: "bi_var_resgates",
+    description: `gerando tabela de variação de resgates MoM e YoY %`,
+    tags: ["resgates","usuarios", "bi","dashboard", "variação","tabela"]
+ }
+
+WITH base AS (
+  SELECT
+    DATE_TRUNC(DATE(Data), MONTH) AS mes,
+    COUNT(DISTINCT Id_Resgate) AS novos_resgates,
+    COUNT(DISTINCT Email) AS clientes_mes
+  FROM ${ref("bi_resgate")}
+  WHERE Id_Resgate IS NOT NULL
+  GROUP BY 1
+),
+
+com_variacoes AS (
+  SELECT
+    mes,
+    novos_resgates,
+    clientes_mes,
+    -- Resgates
+    LAG(novos_resgates) OVER (ORDER BY mes) AS resgates_mes_anterior,
+    LAG(novos_resgates, 12) OVER (ORDER BY mes) AS resgates_ano_anterior,
+    -- Clientes
+    LAG(clientes_mes) OVER (ORDER BY mes) AS clientes_mes_anterior,
+    LAG(clientes_mes, 12) OVER (ORDER BY mes) AS clientes_ano_anterior
+  FROM base
+)
+
+SELECT
+  mes,
+  -- Resgates
+  novos_resgates,
+  SAFE_DIVIDE(novos_resgates - resgates_mes_anterior, resgates_mes_anterior) AS variacao_resgates_mom_pct,
+  SAFE_DIVIDE(novos_resgates - resgates_ano_anterior, resgates_ano_anterior) AS variacao_resgates_yoy_pct,
+  -- Clientes distintos
+  clientes_mes,
+  SAFE_DIVIDE(clientes_mes - clientes_mes_anterior, clientes_mes_anterior) AS variacao_clientes_mom_pct,
+  SAFE_DIVIDE(clientes_mes - clientes_ano_anterior, clientes_ano_anterior) AS variacao_clientes_yoy_pct
+
+FROM com_variacoes
+ORDER BY mes
