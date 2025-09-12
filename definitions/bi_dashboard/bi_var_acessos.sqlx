@@ -9,9 +9,9 @@
 WITH base AS (
   SELECT
     DATE_TRUNC(DATE(Data), MONTH) AS mes,
-    COUNT(DISTINCT Id_Acesso) AS novos_acessos
+    COUNT(DISTINCT Email) AS novos_acessos
   FROM ${ref("bi_acesslogs")}
-  WHERE Id_Acesso IS NOT NULL
+  WHERE Email IS NOT NULL
   GROUP BY 1
 ),
 
