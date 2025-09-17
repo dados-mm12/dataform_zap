@@ -23,7 +23,6 @@ com_variacoes AS (
     LAG(novos_usuarios, 12) OVER (ORDER BY mes) AS usuarios_ano_anterior
   FROM base
 )
-
 SELECT
   mes,
   novos_usuarios,
