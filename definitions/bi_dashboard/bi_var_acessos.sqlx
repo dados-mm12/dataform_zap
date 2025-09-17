@@ -22,7 +22,9 @@ com_variacoes AS (
     LAG(novos_acessos) OVER (ORDER BY mes) AS acessos_mes_anterior,
     LAG(novos_acessos, 12) OVER (ORDER BY mes) AS acessos_ano_anterior
   FROM base
-)
+),
+
+tabela as(
 
 SELECT
   mes,
@@ -30,4 +32,18 @@ SELECT
   SAFE_DIVIDE(novos_acessos - acessos_mes_anterior, acessos_mes_anterior) AS variacao_mom_pct,
   SAFE_DIVIDE(novos_acessos - acessos_ano_anterior, acessos_ano_anterior) AS variacao_yoy_pct
 FROM com_variacoes
-ORDER BY mes
+ORDER BY mes)
+
+SELECT tabela.*, 
+CAST(REPLACE(REPLACE(metas.Usuarios_Acessando, '.', ''), ',', '') AS INT64)
+AS meta_usuarios_acessando,
+
+tabela.novos_acessos/
+CAST(REPLACE(REPLACE(metas.Usuarios_Acessando, '.', ''), ',', '') AS INT64)
+as var_meta
+
+FROM tabela
+LEFT JOIN ${ref("metas_okr_copia")} AS metas 
+ON EXTRACT(MONTH FROM tabela.mes) = CAST(metas.Mes_num AS INT64)
+AND EXTRACT(YEAR FROM tabela.mes) = CAST(metas.Ano_num AS INT64)
+WHERE metas.Conta = "ZAP"
