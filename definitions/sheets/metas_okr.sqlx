@@ -1,6 +1,8 @@
 config {
-  type: "declaration",  // Indica que é uma tabela já existente
+  type: "table",                
   schema: "google_sheets",
-  name: "metas_okr_copia",
-  database: "clube-zap---prd"
+  name: "metas_okr_copia"
 }
+
+SELECT *
+FROM `clube-olx-prd.google_sheets.metas_okr_copia`
