@@ -8,7 +8,7 @@ config {
 
 SELECT *,
 CASE WHEN 
-usuario_cadastrado = "sim" AND usuario_acessou = "não" AND usuario_resgatou = "não" THEN "sem cadastro"
+usuario_cadastrado = "não" AND usuario_acessou = "não" AND usuario_resgatou = "não" THEN "sem cadastro"
 WHEN
 usuario_cadastrado = "sim" AND usuario_acessou = "não" AND usuario_resgatou = "não" THEN "apenas cadastrou"
 WHEN
