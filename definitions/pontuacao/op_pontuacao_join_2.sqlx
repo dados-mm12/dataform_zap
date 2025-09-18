@@ -13,8 +13,8 @@ CONCAT(A.advertiser_id,A.maincontactemail) AS identificacao,
 CAST(REPLACE(A.payment_price, ',', '.') AS FLOAT64) AS payment_price,
 A.transactions_status,
 A.rank_pontuacao, 
-DATE(A.payment_date),
-DATE(A.expiration_date),
+DATE(A.payment_date) AS payment_date,
+DATE(A.expiration_date) AS payment_price,
 CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_cadastrado
 
 
