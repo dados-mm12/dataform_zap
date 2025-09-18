@@ -1,0 +1,8 @@
+config {
+  type: "table",                
+  schema: "google_sheets",
+  name: "pontuacao_faturamento_copia"
+}
+
+SELECT *
+FROM `clube-olx-prd.google_sheets.pontuacao_faturamento_copia`
