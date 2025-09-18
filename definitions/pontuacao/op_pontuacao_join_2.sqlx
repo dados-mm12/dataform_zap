@@ -1,0 +1,25 @@
+config {
+  type: "view",
+  schema: "pontuacao",
+  name: "op_pontuacao_join_2",
+  description: "selecionando colunas necessarias da tabela de transacoes",
+  tags: ["join", "pontuacao", "usuarios"]
+}
+
+SELECT 
+advertiser_id,
+maincontactemail,
+CONCAT(advertiser_id,maincontactemail) AS identificacao,
+payment_price,
+transactions_status,
+rank_pontuacao, 
+payment_date,
+expiration_date
+
+
+FROM ${ref("pontuacao_faturamento_copia")} 
+
+LEF
+
+where advertiser_id = "10478b24-63ce-4f1c-3d56-d58f3b13038f"  AND maincontactemail = "luisi@catita.com.br"
+
