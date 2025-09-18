@@ -1,0 +1,11 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_faturamento",
+  description: "tabela pontuacao e faturamento de zap",
+  tags: ["bi", "faturamento","pontuacao","mensal"]
+}
+
+SELECT *
+
+FROM ${ref("op_pontuacao_join_3")}
