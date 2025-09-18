@@ -10,11 +10,11 @@ SELECT
 A.advertiser_id,
 A.maincontactemail,
 CONCAT(A.advertiser_id,A.maincontactemail) AS identificacao,
-A.payment_price,
+CAST(REPLACE(A.payment_price, ',', '.') AS FLOAT64) AS payment_price,
 A.transactions_status,
 A.rank_pontuacao, 
-A.payment_date,
-A.expiration_date,
+DATE(A.payment_date),
+DATE(A.expiration_date),
 CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_cadastrado
 
 
