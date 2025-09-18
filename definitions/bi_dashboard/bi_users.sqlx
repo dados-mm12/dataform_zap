@@ -7,3 +7,5 @@ config {
 }
 
 select * from  ${ref("op_cadastro_join_1")}
+WHERE 
+CriadoEm IS NOT NULL

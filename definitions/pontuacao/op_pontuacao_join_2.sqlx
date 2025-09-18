@@ -7,19 +7,19 @@ config {
 }
 
 SELECT 
-advertiser_id,
-maincontactemail,
-CONCAT(advertiser_id,maincontactemail) AS identificacao,
-payment_price,
-transactions_status,
-rank_pontuacao, 
-payment_date,
-expiration_date
+A.advertiser_id,
+A.maincontactemail,
+CONCAT(A.advertiser_id,A.maincontactemail) AS identificacao,
+A.payment_price,
+A.transactions_status,
+A.rank_pontuacao, 
+A.payment_date,
+A.expiration_date,
+CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_cadastrado
 
 
-FROM ${ref("pontuacao_faturamento_copia")} 
+FROM ${ref("pontuacao_faturamento_copia")} AS A
 
-LEF
-
-where advertiser_id = "10478b24-63ce-4f1c-3d56-d58f3b13038f"  AND maincontactemail = "luisi@catita.com.br"
+LEFT JOIN ${ref("bi_users")} AS B 
+ON  A.advertiser_id = B.Id_Zap  AND A.maincontactemail = B.Email
 
