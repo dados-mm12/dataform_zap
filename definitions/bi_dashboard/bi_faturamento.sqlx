@@ -6,6 +6,15 @@ config {
   tags: ["bi", "faturamento","pontuacao","mensal"]
 }
 
-SELECT *
+SELECT *,
+CASE WHEN 
+usuario_cadastrado = "sim" AND usuario_acessou = "não" AND usuario_resgatou = "não" THEN "sem cadastro"
+WHEN
+usuario_cadastrado = "sim" AND usuario_acessou = "não" AND usuario_resgatou = "não" THEN "apenas cadastrou"
+WHEN
+usuario_cadastrado = "sim" AND usuario_acessou = "sim" AND usuario_resgatou = "não" THEN "cadastrou e acessou"
+WHEN
+usuario_cadastrado = "sim" AND usuario_acessou = "sim" AND usuario_resgatou = "sim" THEN "acessou e resgatou"
+END AS tipo_usuario
 
 FROM ${ref("op_pontuacao_join_3")}
