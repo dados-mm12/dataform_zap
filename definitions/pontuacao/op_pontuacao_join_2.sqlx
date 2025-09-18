@@ -14,7 +14,7 @@ CAST(REPLACE(A.payment_price, ',', '.') AS FLOAT64) AS payment_price,
 A.transactions_status,
 A.rank_pontuacao, 
 DATE(A.payment_date) AS payment_date,
-DATE(A.expiration_date) AS payment_price,
+DATE(A.expiration_date) AS expiration_date,
 CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_cadastrado
 
 
