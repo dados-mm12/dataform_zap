@@ -1,0 +1,19 @@
+config {
+  type: "view",
+  schema: "pontuacao",
+  name: "op_pontuacao_join_3",
+  description: "puxando de outras tabelas comportamentos dos clientes para agrupá-los em tipos",
+  tags: ["join", "pontuacao", "usuarios"]
+}
+
+SELECT A.*,
+CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_acessou,
+CASE WHEN C.Email IS NULL THEN "não" ELSE "sim" END AS usuario_resgatou
+
+FROM ${ref("op_pontuacao_join_2")} AS A
+
+LEFT JOIN ${ref("bi_acesslogs")} AS B 
+ON  A.advertiser_id = B.Id_Zap  AND A.maincontactemail = B.Email
+
+LEFT JOIN ${ref("bi_resgate")} AS C 
+ON  A.advertiser_id = C.Id_Zap  AND A.maincontactemail = C.Email
