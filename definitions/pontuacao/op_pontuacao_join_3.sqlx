@@ -8,7 +8,8 @@ config {
 
 SELECT A.*,
 CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_acessou,
-CASE WHEN C.Email IS NULL THEN "não" ELSE "sim" END AS usuario_resgatou
+CASE WHEN C.Email IS NULL THEN "não" ELSE "sim" END AS usuario_resgatou,
+CASE WHEN D.Id_Zap IS NULL THEN "não" ELSE "sim" END AS realizou_missao
 
 FROM ${ref("op_pontuacao_join_2")} AS A
 
@@ -17,3 +18,7 @@ ON  A.advertiser_id = B.Id_Zap  AND A.maincontactemail = B.Email
 
 LEFT JOIN ${ref("bi_resgate")} AS C 
 ON  A.advertiser_id = C.Id_Zap  AND A.maincontactemail = C.Email
+
+LEFT JOIN ${ref("bi_statements")} as D
+ON a.maincontactemail = D.Email and a.advertiser_id = D.Id_Zap
+where D.Tipo = "Missão"
