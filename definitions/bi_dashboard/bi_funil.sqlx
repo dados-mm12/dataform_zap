@@ -1,0 +1,55 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_funil",
+  description: "tabela final de acessos",
+  tags: ["bi", "resgates","acessos","cadastros","missao"]
+}
+
+WITH acessos AS (
+  SELECT
+    Email,
+    DATE_TRUNC(DATE(Data), MONTH) AS mes_inicio
+  FROM ${ref("bi_acesslogs")}
+  GROUP BY Email, mes_inicio
+),
+
+resgates AS (
+  SELECT
+    Email,
+    DATE_TRUNC(DATE(Data), MONTH) AS mes_inicio
+  FROM ${ref("bi_resgate")}
+  GROUP BY Email, mes_inicio
+),
+
+missoes AS (
+  SELECT
+    Email,
+    DATE_TRUNC(DATE(Data), MONTH) AS mes_inicio
+  FROM ${ref("bi_statements")}
+  WHERE Tipo = "Missão"          -- filtra aqui para manter LEFT JOIN correto
+  GROUP BY Email, mes_inicio
+),
+
+all_email_mes AS (
+  -- união de todos email+mês (cada combinação aparece apenas 1 vez)
+  SELECT Email, mes_inicio FROM acessos
+  UNION DISTINCT
+  SELECT Email, mes_inicio FROM resgates
+  UNION DISTINCT
+  SELECT Email, mes_inicio FROM missoes
+)
+
+SELECT
+  EXTRACT(MONTH FROM ae.mes_inicio) AS Mes,
+  EXTRACT(YEAR  FROM ae.mes_inicio) AS Ano,
+  ae.Email,
+  CASE WHEN a.Email IS NOT NULL THEN "sim" ELSE "não" END AS usuario_acessou,
+  CASE WHEN r.Email IS NOT NULL THEN "sim" ELSE "não" END AS usuario_resgatou,
+  CASE WHEN m.Email IS NOT NULL THEN "sim" ELSE "não" END AS realizou_missao
+FROM all_email_mes ae
+LEFT JOIN acessos a  USING (Email, mes_inicio)
+LEFT JOIN resgates r USING (Email, mes_inicio)
+LEFT JOIN missoes m  USING (Email, mes_inicio)
+ORDER BY Ano, Mes, ae.Email
+
