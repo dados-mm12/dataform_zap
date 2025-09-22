@@ -43,9 +43,9 @@ all_email_mes AS (
 SELECT
   ae.mes_inicio AS Mes_ano,  
   ae.Email,
-  CASE WHEN a.Email IS NOT NULL THEN "sim" ELSE "não" END AS usuario_acessou,
-  CASE WHEN r.Email IS NOT NULL THEN "sim" ELSE "não" END AS usuario_resgatou,
-  CASE WHEN m.Email IS NOT NULL THEN "sim" ELSE "não" END AS realizou_missao
+  CASE WHEN a.Email IS NOT NULL THEN 1 ELSE 0 END AS usuario_acessou,
+  CASE WHEN r.Email IS NOT NULL THEN 1 ELSE 0 END AS usuario_resgatou,
+  CASE WHEN m.Email IS NOT NULL THEN 1 ELSE 0 END AS realizou_missao
 FROM all_email_mes ae
 LEFT JOIN acessos a  USING (Email, mes_inicio)
 LEFT JOIN resgates r USING (Email, mes_inicio)
