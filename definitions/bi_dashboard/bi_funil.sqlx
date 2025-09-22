@@ -41,8 +41,7 @@ all_email_mes AS (
 )
 
 SELECT
-  EXTRACT(MONTH FROM ae.mes_inicio) AS Mes,
-  EXTRACT(YEAR  FROM ae.mes_inicio) AS Ano,
+  ae.mes_inicio AS Mes_ano,  
   ae.Email,
   CASE WHEN a.Email IS NOT NULL THEN "sim" ELSE "não" END AS usuario_acessou,
   CASE WHEN r.Email IS NOT NULL THEN "sim" ELSE "não" END AS usuario_resgatou,
@@ -51,5 +50,5 @@ FROM all_email_mes ae
 LEFT JOIN acessos a  USING (Email, mes_inicio)
 LEFT JOIN resgates r USING (Email, mes_inicio)
 LEFT JOIN missoes m  USING (Email, mes_inicio)
-ORDER BY Ano, Mes, ae.Email
+ORDER BY ae.mes_inicio, ae.Email
 
