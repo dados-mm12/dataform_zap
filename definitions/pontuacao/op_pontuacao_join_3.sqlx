@@ -9,8 +9,10 @@ config {
 SELECT A.*,
 CASE WHEN B.Email IS NULL THEN "não" ELSE "sim" END AS usuario_acessou,
 CASE WHEN C.Email IS NULL THEN "não" ELSE "sim" END AS usuario_resgatou,
-CASE WHEN D.Id_Zap IS NULL THEN "não" ELSE "sim" END AS realizou_missao
-
+CASE WHEN D.Id_Zap IS NULL THEN "não" ELSE "sim" END AS realizou_missao,
+CASE WHEN A.payment_date <= DATE_ADD(A.expiration_date, INTERVAL 1 DAY) THEN "sim" ELSE "não"
+ END AS no_prazo
+ 
 FROM ${ref("op_pontuacao_join_2")} AS A
 
 LEFT JOIN ${ref("bi_acesslogs")} AS B 
