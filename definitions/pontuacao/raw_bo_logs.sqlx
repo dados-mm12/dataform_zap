@@ -57,4 +57,4 @@ SELECT
   -- Campo nulo explícito
   JSON_VALUE(data, '$.newData.date') AS Date_Null
 
-FROM ${ref("firestore_export", "bo_logs_raw_changelog")}
+FROM ${ref("firestore_export", "bo_logs_raw_latest")}
