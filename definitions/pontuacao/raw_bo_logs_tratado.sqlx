@@ -22,7 +22,7 @@ WITH base AS (
       AS INT64
     ) AS vencto_int
 
-  FROM ${ref("firestore_export", "bo_logs_raw_latest")}
+   FROM ${ref("bo_logs_raw_latest")}
 )
 
 SELECT
