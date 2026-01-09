@@ -1,0 +1,7 @@
+config {
+  type: "declaration",  // Indica que é uma tabela já existente
+  schema: "firestore_export",
+  name: "bo_logs_raw_changelog",
+  database: "clube-zap---prd"
+}
+

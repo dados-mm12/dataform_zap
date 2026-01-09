@@ -1,0 +1,60 @@
+config {
+  type: "table",
+  schema: "pontuacao",
+  name: "raw_bo_logs",
+  description: "tabela bruta com pontuação de baldinhos",
+  tags: ["raw", "pontuacao", "baldinhos"]
+}
+
+
+SELECT
+  -- Data de criação (Firestore → UTC-3)
+  DATETIME_SUB(
+    DATETIME(
+      TIMESTAMP_SECONDS(
+        CAST(JSON_VALUE(data, '$.createdAt._seconds') AS INT64)
+      )
+    ),
+    INTERVAL 180 MINUTE
+  ) AS Data,
+
+  -- Campos raiz
+  JSON_VALUE(data, '$.action')      AS Action,
+  JSON_VALUE(data, '$.by')          AS Criado_por,
+  JSON_VALUE(data, '$.collection')  AS Collection,
+  JSON_VALUE(data, '$.description') AS Description,
+  JSON_VALUE(data, '$.justification') AS Justification,
+  JSON_VALUE(data, '$.commentary')  AS Commentary,
+
+  -- oldData (mantido como JSON bruto)
+  JSON_QUERY(data, '$.oldData') AS Old_Data_JSON,
+
+  -- newData – identificação
+  JSON_VALUE(data, '$.newData.numContrato') AS Num_Contrato,
+  JSON_VALUE(data, '$.newData.userId')      AS User_Id,
+
+  -- newData – flags (strings → boolean)
+  CAST(JSON_VALUE(data, '$.newData.pgtoEmDia') AS BOOL)        AS Pgto_Em_Dia,
+  CAST(JSON_VALUE(data, '$.newData.pgtoAdiantado') AS BOOL)   AS Pgto_Adiantado,
+  CAST(JSON_VALUE(data, '$.newData.pgtoComCartao') AS BOOL)   AS Pgto_Com_Cartao,
+
+  -- newData – pontos
+  CAST(JSON_VALUE(data, '$.newData.missaoPontos') AS INT64) AS Missao_Pontos,
+  JSON_VALUE(data, '$.newData.outrosDescricao')   AS Outros_Descricao,
+  CAST(JSON_VALUE(data, '$.newData.outrosPontos') AS INT64) AS Outros_Pontos,
+
+  -- newData – datas numéricas (Excel / OADate)
+  DATE_ADD(
+    DATE '1899-12-30',
+    INTERVAL CAST(JSON_VALUE(data, '$.newData.dataPagto') AS INT64) DAY
+  ) AS Data_Pagto,
+
+  DATE_ADD(
+    DATE '1899-12-30',
+    INTERVAL CAST(JSON_VALUE(data, '$.newData.Vencto') AS INT64) DAY
+  ) AS Vencimento,
+
+  -- Campo nulo explícito
+  JSON_VALUE(data, '$.newData.date') AS Date_Null
+
+FROM ${ref("firestore_export", "bo_logs_raw_changelog")}
