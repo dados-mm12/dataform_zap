@@ -42,7 +42,7 @@ SELECT
   JSON_VALUE(data, '$.collection')    AS Collection,
   JSON_VALUE(data, '$.description')   AS Description,
   JSON_VALUE(data, '$.justification') AS Justification,
-  JSON_VALUE(data, '$.commentary')    AS Commentary,
+  SAFE_CAST(JSON_VALUE(data, '$.commentary') AS FLOAT64) AS Commentary,
 
   -- oldData (JSON bruto)
   JSON_QUERY(data, '$.oldData') AS Old_Data_JSON,
