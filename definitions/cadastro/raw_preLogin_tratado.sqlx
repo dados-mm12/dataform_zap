@@ -1,0 +1,38 @@
+config {
+  type: "table",
+  schema: "cadastro",
+  name: "raw_prelogin_tratado",
+  description: "tabela bruta de pre-login de usuários",
+  tags: ["raw", "cadastro", "prelogin"]
+}
+
+SELECT
+  DATETIME_SUB(
+    DATETIME(
+      TIMESTAMP_SECONDS(
+        CAST(JSON_VALUE(col.data, '$.createdAt._seconds') AS INT64)
+      )
+    ),
+    INTERVAL 180 MINUTE
+  ) AS CriadoEm,
+
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.email'), r'([\"])', '') AS Email,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.id'), r'([\"])', '') AS Id_Usuario,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.zapId'), r'([\"])', '') AS Id_Zap,
+
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.accountId'), r'([\"])', '') AS accountID,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.accountType'), r'([\"])', '') AS accountType,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.contractNumber'), r'([\"])', '') AS contractNumber,
+
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.category'), r'([\"])', '') AS Categoria,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.type'), r'([\"])', '') AS Tipo,
+
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.emailId'), r'([\"])', '') AS emailId,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.gerente'), r'([\"])', '') AS Gerente,
+  REGEXP_REPLACE(JSON_EXTRACT(col.data, '$.proprietario'), r'([\"])', '') AS Proprietario,
+
+  SAFE_CAST(JSON_VALUE(col.data, '$.pontos') AS INT64) AS Pontos,
+  SAFE_CAST(JSON_VALUE(col.data, '$.activated') AS BOOL) AS Ativado,
+  SAFE_CAST(JSON_VALUE(col.data, '$.blocked') AS BOOL) AS Bloqueado
+
+FROM ${ref("preLogin_raw_latest")} AS col
