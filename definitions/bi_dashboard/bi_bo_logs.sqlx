@@ -1,0 +1,47 @@
+config {
+  type: "table",
+  schema: "bi_dashboard",
+  name: "bi_bo_logs",
+  description: "tabela final de baldinhos",
+  tags: ["bi", "logs","pontuacao", "baldinhos","credito"]
+}
+
+
+WITH TAB AS(
+  SELECT 
+  A.User_Id,
+  A.Data AS data_credito,
+  A.Description AS contexto_area_atuacao,
+  A.Commentary AS valor_negociado,
+  A.Outros_Pontos AS pontos,
+  B.Email AS cliente,
+  CASE 
+    WHEN C.Id_Zap IS NULL THEN 'cadastrado' 
+    ELSE 'não cadastrado' 
+  END AS status_usuario,
+  D.Data AS ultima_data_resgate
+FROM ${ref('raw_bo_logs_tratado')} AS A
+
+LEFT JOIN ${ref('raw_prelogin_tratado')} AS B
+  ON A.User_Id = B.Id_Zap
+
+LEFT JOIN ${ref('raw_users_tratado')} AS C
+  ON A.User_Id = C.Id_Zap
+
+LEFT JOIN (
+  SELECT
+    Id_Zap,
+    Data,
+    ROW_NUMBER() OVER (
+      PARTITION BY Id_Zap
+      ORDER BY Data DESC
+    ) AS rn
+  FROM ${ref('bi_resgate')}
+) AS D
+  ON A.User_Id = D.Id_Zap
+ AND D.rn = 1
+)
+
+SELECT *,
+CASE WHEN ultima_data_resgate >= data_credito THEN 'sim' ELSE 'não' END AS utilizou_pontos_em_resgate
+FROM TAB
