@@ -11,6 +11,7 @@ WITH TAB AS(
   SELECT 
   A.User_Id,
   A.Criado_por,
+  A.Action,
   A.Data AS data_credito,
   A.Description AS contexto_area_atuacao,
   A.Commentary AS valor_negociado,
