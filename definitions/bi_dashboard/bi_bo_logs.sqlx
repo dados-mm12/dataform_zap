@@ -18,8 +18,8 @@ WITH TAB AS(
   A.Outros_Pontos AS pontos,
   B.Email AS cliente,
   CASE 
-    WHEN C.Id_Zap IS NULL THEN 'cadastrado' 
-    ELSE 'não cadastrado' 
+    WHEN C.Id_Zap IS NULL THEN 'não cadastrado' 
+    ELSE 'cadastrado' 
   END AS status_usuario,
   D.Data AS ultima_data_resgate
 FROM ${ref('raw_bo_logs_tratado')} AS A
